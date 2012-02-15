@@ -1,0 +1,17 @@
+[	
+	{
+		"pages":"100",
+		"title":"book a",
+		"author":"J Bloggs"
+	},
+	{
+		"pages":"50",
+		"title":"book b",
+		"author":"F smith"
+	},
+	{
+		"pages":"25",
+		"title":"book c",
+		"author":"B Williams"
+	}
+]

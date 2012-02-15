@@ -1,0 +1,20 @@
+html, body {
+  height: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+#container {
+  height: auto;
+  min-height: 100%;
+	position: relative;
+}
+
+.library {
+	margin-left: 36%;
+	padding: 0.1em 2%;
+}
+
