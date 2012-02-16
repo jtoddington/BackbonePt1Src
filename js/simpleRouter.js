@@ -2,7 +2,7 @@
 
 	$(document).ready(function(){
 
-
+		/*Same model as simpleModel.js*/
 		window.Book = Backbone.Model.extend({
 			url:'book',
 			defaults:{
@@ -13,12 +13,13 @@
 			}
 		});
 
+		/*Same collection as simpleCollection.js*/
 		window.Books = Backbone.Collection.extend({
 			model:Book,
 			url:'books.json',
 		});
 		
-		//Views replace controllers in some respects
+		/*Same view as simpleView.js*/
 		window.BookView = Backbone.View.extend({
 		
 				tagName: 'li',
@@ -38,7 +39,7 @@
 				}
 		});		
 		
-		
+		/*Same view as simpleView.js but with added listener*/
 		window.LibraryView = Backbone.View.extend({
 			tagName: 'section',
 			className: 'library',
@@ -47,11 +48,11 @@
 				_.bindAll(this, 'render');
 				this.template = _.template($('#library-template').html());
 				this.collection.bind('reset', this.render);
-				 this.collection.bind('add', this.render);
+				/* We're also listening for add events to the collection */
+				this.collection.bind('add', this.render);
 			},
 			
 			render: function(){
-				//iterate over each album
 				var $books, 
 					collection = this.collection;
 				$(this.el).html(this.template({}));
@@ -68,30 +69,51 @@
 		});
 
 
-		//Instatiate the library. 
+		/*
+			Create an instance of our library to use in the router. 
+		*/
 		window.library = new Books();		
 		
+		/*
+			Define a router to handle the laying out of our application components and hooking up with the data model.
+			An application may have many routers handling different logically separated parts of the application.
+		*/
 		window.BackboneLibrary = Backbone.Router.extend({
+			/*
+				Declare the routes that this router will handle.
+				Key value pairs, where '' is the default route, and map
+				to functions declared in the Router.
+			*/
 			routes:{
 				'':'home',
 				'blank':'blank',
 			},			
 
+			/*
+				When the router is created, populate the library and create an instance of its view.
+			*/
 			initialize: function(){
 				window.library.fetch();
-				//instantiate root level views
+				//instantiate root level views, could be many of these!
 				this.libraryView = new LibraryView({
 					collection: window.library
 				});
 			},			
 			
+			/*
+				This is run when we hit the '' route
+			*/
 			home: function(){
+				/*Empty the container div in the HTML and populate with the rendered view content.*/
 				var $container = $('#container');
 				$container.empty();
 				$container.append(this.libraryView.render().el);
 
 			},
 			
+			/*
+				Run when we hit our 'blank' route.
+			*/
 			blank: function(){
 				var $container = $('#container');
 				$container.empty();
@@ -100,23 +122,32 @@
 			
 		});		
 		
+		/*
+			Create an instance of our Router and then call Backbone to start our Routers. 
+		*/
 		$(function(){
+			/*
+				We can also create the app with the following options
+				window.App = new BackboneLibrary({pushState:true, root:"/backbonePres"});
+				To enable restful URLs in the router, but the web server needs to be configured
+				so all requests map to the root Backbone html file. 
+			*/
 			window.App = new BackboneLibrary();
 			Backbone.history.start();
 		})		
-
-		//window.library = new Books(); //can instantiate with data here too!
-		//library.fetch()
-		//library
-		//this.libraryView = new LibraryView({collection: window.library});
-		//libraryView.render();
-		//var $container = $('#container');
-		//$container.empty();	
-		//$container.append(libraryView.render().el);		
-
 		
-		//library.add({title:"test",author:"test"})		
-		//App.libraryView.render()
+		/**
+		 * Run the following code in the browser console to manipulate the data and observe the view changing.
+		 **/		
+		/*Add a title and check the view gets updated.*/
+		//library.add({title:"test1",author:"test1"})		
+		/*Modify a book in the collection and make sure the view updates*/
+		//library.at(0).set({author:"Ray Parker, Jr", title:"Goat Rearing"})
+		
+		/*Navigate to <<serverUrl>>/sampleRouter.html#blank  and check that we hit our 'blank' route */
+		/* Do it programatically using the Router object, we can control what gets put in the browsers history here too!*/
+		//App.navigate('blank', {trigger: true})
+		
 		
 
 	});
